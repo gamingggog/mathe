@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathe-Spiel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #50E3C2;
+            --accent: #F5A623;
+            --background: #F8F9FA;
+            --text: #2C3E50;
+            --error: #FF6B6B;
+            --success: #4CAF50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 900px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--primary);
+            color: white;
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            background: #357ABD;
+        }
+
+        .game-section {
+            display: none;
+        }
+
+        .login-section {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--background);
+            border-radius: 15px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .question-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 1.5rem 0;
+            color: var(--text);
+            box-shadow: var(--shadow);
+            font-weight: 600;
+        }
+
+        .feedback {
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            min-height: 40px;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .correct {
+            background: var(--success);
+            color: white;
+        }
+
+        .incorrect {
+            background: var(--error);
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 12px;
+        }
+
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .time-display {
+            font-size: 1.1rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: var(--error);
+            width: auto;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .leaderboard {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .leaderboard h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .leaderboard-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+
+        .leaderboard-table th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        .leaderboard-table th:last-child {
+            border-top-right-radius: 12px;
+        }
+
+        .leaderboard-table tr:nth-child(even) {
+            background: var(--background);
+        }
+
+        .leaderboard-table tr:hover {
+            background: #F0F0F0;
+        }
+
+        .menu-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-buttons button {
+            margin: 0;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .difficulty-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            background: var(--background);
+            color: var(--text);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .difficulty-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .question-box {
+                font-size: 2rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
+            <h1>Mathe-Spiel</h1>
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Benutzername" required>
+                <input type="password" id="password" placeholder="Passwort" required>
+                <button onclick="login()">Anmelden</button>
+                <button onclick="register()">Registrieren</button>
+            </div>
+            <div class="leaderboard">
+                <h3>🏆 Bestenliste 🏆</h3>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Platz</th>
+                            <th>Name</th>
+                            <th>Punkte</th>
+                            <th>Spielzeit</th>
+                            <th>Genauigkeit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Game Section -->
+        <div class="game-section" id="gameSection">
+            <div class="user-info">
+                <div class="user-details">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <div>
+                        <div>Angemeldet als: <span id="currentUser"></span></div>
+                        <div class="time-display">Spielzeit: <span id="gameTime">00:00</span></div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Abmelden</button>
+            </div>
+            <h2>Mathe-Spiel</h2>
+            <div class="difficulty-selector">
+                <div class="difficulty-btn active" onclick="setDifficulty('easy')">Leicht</div>
+                <div class="difficulty-btn" onclick="setDifficulty('medium')">Mittel</div>
+                <div class="difficulty-btn" onclick="setDifficulty('hard')">Schwer</div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">Punkte</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Richtig</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="wrongAnswers">0</div>
+                    <div class="stat-label">Falsch</div>
+                </div>
+            </div>
+            <div class="question-box" id="question">Laden...</div>
+            <div class="form-group">
+                <input type="number" id="answer" placeholder="Deine Antwort" step="any">
+                <div class="menu-buttons">
+                    <button onclick="checkAnswer()">Antwort prüfen</button>
+                    <button onclick="generateQuestion()">Neue Aufgabe</button>
+                </div>
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        let users = JSON.parse(localStorage.getItem('users')) || {};
+        let currentUser = null;
+        let currentAnswer = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let gameStartTime = null;
+        let gameTimer = null;
+        let currentDifficulty = 'easy';
+
+        function setDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            generateQuestion();
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (users[username] && users[username].password === password) {
+                currentUser = username;
+                score = users[username].score || 0;
+                correctAnswers = users[username].correctAnswers || 0;
+                wrongAnswers = users[username].wrongAnswers || 0;
+                showGame();
+                startGameTimer();
+                updateUserAvatar();
+            } else {
+                alert('Falscher Benutzername oder Passwort!');
+            }
+        }
+
+        function register() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('Bitte fülle alle Felder aus!');
+                return;
+            }
+
+            if (users[username]) {
+                alert('Dieser Benutzername existiert bereits!');
+                return;
+            }
+
+            users[username] = {
+                password: password,
+                score: 0,
+                correctAnswers: 0,
+                wrongAnswers: 0,
+                totalTime: 0,
+                lastLogin: new Date().toISOString(),
+                highScore: 0
+            };
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Registrierung erfolgreich! Du kannst dich jetzt anmelden.');
+            updateLeaderboard();
+        }
+
+        function logout() {
+            if (currentUser) {
+                users[currentUser].score = score;
+                users[currentUser].correctAnswers = correctAnswers;
+                users[currentUser].wrongAnswers = wrongAnswers;
+                users[currentUser].totalTime += getGameTime();
+                if (score > (users[currentUser].highScore || 0)) {
+                    users[currentUser].highScore = score;
+                }
+                localStorage.setItem('users', JSON.stringify(users));
+                stopGameTimer();
+            }
+            currentUser = null;
+            showLogin();
+            updateLeaderboard();
+        }
+
+        function showGame() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentUser;
+            document.getElementById('score').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('wrongAnswers').textContent = wrongAnswers;
+            generateQuestion();
+        }
+
+        function showLogin() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('gameSection').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function generateQuestion() {
+            const operations = ['+', '−', '×', '÷'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            let num1, num2;
+
+            switch(currentDifficulty) {
+                case 'easy':
+                    num1 = Math.floor(Math.random() * 20) + 1;
+                    num2 = Math.floor(Math.random() * 20) + 1;
+                    break;
+                case 'medium':
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * 50) + 1;
+                    break;
+                case 'hard':
+                    num1 = Math.floor(Math.random() * 100) + 1;
+                    num2 = Math.floor(Math.random() * 100) + 1;
+                    break;
+            }
+
+            if (operation === '−' && num1 < num2) {
+                [num1, num2] = [num2, num1];
+            }
+
+            if (operation === '÷') {
+                num2 = Math.floor(Math.random() * 10) + 1;
+                num1 = num2 * (Math.floor(Math.random() * 10) + 1);
+            }
+
+            const question = `${num1} ${operation} ${num2}`;
+            let calculatedAnswer;
+            switch(operation) {
+                case '+': calculatedAnswer = num1 + num2; break;
+                case '−': calculatedAnswer = num1 - num2; break;
+                case '×': calculatedAnswer = num1 * num2; break;
+                case '÷': calculatedAnswer = num1 / num2; break;
+            }
+
+            currentAnswer = calculatedAnswer;
+            document.getElementById('question').textContent = question;
+            document.getElementById('answer').value = '';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById('answer').value);
+            const feedback = document.getElementById('feedback');
+            
+            if (Math.abs(userAnswer - currentAnswer) < 0.01) {
+                score++;
+                correctAnswers++;
+                feedback.textContent = 'Richtig! 🎉';
+                feedback.className = 'feedback correct';
+                if (navigator.vibrate) {
+                    navigator.vibrate(100);
+                }
+            } else {
+                wrongAnswers++;
+                feedback.textContent = `Falsch. Die Antwort war ${currentAnswer}`;
+                feedback.className = 'feedback incorrect';
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100]);
+                }
+            }
+            
+            document.getElementById('score').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('wrongAnswers').textContent = wrongAnswers;
+            
+            if (currentUser) {
+                users[currentUser].score = score;
+                users[currentUser].correctAnswers = correctAnswers;
+                users[currentUser].wrongAnswers = wrongAnswers;
+                if (score > (users[currentUser].highScore || 0)) {
+                    users[currentUser].highScore = score;
+                }
+                localStorage.setItem('users', JSON.stringify(users));
+                updateLeaderboard();
+            }
+            setTimeout(generateQuestion, 1500);
+        }
+
+        function startGameTimer() {
+            gameStartTime = Date.now();
+            gameTimer = setInterval(updateGameTime, 1000);
+        }
+
+        function stopGameTimer() {
+            if (gameTimer) {
+                clearInterval(gameTimer);
+                gameTimer = null;
+            }
+        }
+
+        function updateGameTime() {
+            const timeElement = document.getElementById('gameTime');
+            const seconds = Math.floor((Date.now() - gameStartTime) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function getGameTime() {
+            return Math.floor((Date.now() - gameStartTime) / 1000);
+        }
+
+        function updateLeaderboard() {
+            const leaderboardBody = document.getElementById('leaderboardBody');
+            leaderboardBody.innerHTML = '';
+
+            const sortedUsers = Object.entries(users)
+                .sort(([,a], [,b]) => (b.highScore || 0) - (a.highScore || 0))
+                .slice(0, 10);
+
+            sortedUsers.forEach(([username, data], index) => {
+                const row = document.createElement('tr');
+                const totalTime = data.totalTime || 0;
+                const minutes = Math.floor(totalTime / 60);
+                const seconds = totalTime % 60;
+                const accuracy = data.correctAnswers + data.wrongAnswers > 0 
+                    ? Math.round((data.correctAnswers / (data.correctAnswers + data.wrongAnswers)) * 100)
+                    : 0;
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${username}</td>
+                    <td>${data.highScore || 0}</td>
+                    <td>${minutes}m ${seconds}s</td>
+                    <td>${accuracy}%</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+        }
+
+        function updateUserAvatar() {
+            const avatar = document.getElementById('userAvatar');
+            if (currentUser) {
+                avatar.textContent = currentUser.charAt(0).toUpperCase();
+            }
+        }
+
+        document.getElementById('answer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        updateLeaderboard();
+    </script>
+</body>
+</html> 
